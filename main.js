@@ -33,14 +33,16 @@ function loadNotes(mainWindow) {
 
     const notes = files
       .filter(file => path.extname(file) === '.txt')
-      .map(file => fs.readFileSync(path.join(notesDir, file), 'utf-8'));
+      .map(file => ({
+        noteText: fs.readFileSync(path.join(notesDir, file), 'utf-8'),
+        fileName: file,
+      }));
 
     mainWindow.webContents.send('load-notes', notes);
   });
 }
 
-ipcMain.on('save-note', (event, noteText) => {
-  const fileName = `note-${Date.now()}.txt`;
+ipcMain.on('save-note', (event, { noteText, fileName }) => {
   const filePath = path.join(notesDir, fileName);
 
   fs.writeFile(filePath, noteText, (err) => {
@@ -63,3 +65,14 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+ipcMain.on('update-note', (event, { noteText, fileName }) => {
+  const filePath = path.join(notesDir, fileName);
+
+  fs.writeFile(filePath, noteText, (err) => {
+    if (err) {
+      console.error('Error updating note:', err);
+    }
+  });
+});
+
