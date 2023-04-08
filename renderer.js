@@ -4,19 +4,34 @@ const saveNoteButton = document.getElementById('save-note');
 
 let currentNoteFileName = null;
 
-function loadNoteToEditor(noteText, fileName) {
-  noteContent.value = noteText;
-  currentNoteFileName = fileName;
+function loadNoteToEditor(noteElement) {
+  noteContent.value = noteElement.textContent;
+  currentNoteFileName = noteElement.dataset.fileName;
 }
 
 function createNoteElement(noteText, fileName) {
   const noteElement = document.createElement('div');
   noteElement.textContent = noteText;
   noteElement.dataset.fileName = fileName;
+  noteElement.classList.add('note-item');
   noteElement.addEventListener('click', () => {
-    loadNoteToEditor(noteText, fileName);
+    loadNoteToEditor(noteElement);
   });
   notesList.appendChild(noteElement);
+}
+
+function updateNoteElement(noteText, fileName) {
+  const noteElements = notesList.children;
+  for (const noteElement of noteElements) {
+    if (noteElement.dataset.fileName === fileName) {
+      noteElement.textContent = noteText;
+      break;
+    }
+  }
+}
+
+function deleteNoteElement(noteElement) {
+  notesList.removeChild(noteElement);
 }
 
 saveNoteButton.addEventListener('click', () => {
@@ -30,6 +45,8 @@ saveNoteButton.addEventListener('click', () => {
 
     if (isNewNote) {
       createNoteElement(noteText, payload.fileName);
+    } else {
+      updateNoteElement(noteText, currentNoteFileName);
     }
 
     noteContent.value = '';

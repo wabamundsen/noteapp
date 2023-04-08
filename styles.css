@@ -1,0 +1,14 @@
+.note-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.03);
+    transition: background-color 0.3s;
+  }
+  
+  .note-item:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
