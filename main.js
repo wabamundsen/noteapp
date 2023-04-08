@@ -66,13 +66,25 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('update-note', (event, { noteText, fileName }) => {
-  const filePath = path.join(notesDir, fileName);
-
-  fs.writeFile(filePath, noteText, (err) => {
+ipcMain.on("update-note", (event, payload) => {
+  const filePath = path.join(notesDir, payload.fileName);
+  fs.writeFile(filePath, payload.noteText, (err) => {
     if (err) {
-      console.error('Error updating note:', err);
+      console.error(`Error updating note: ${err}`);
+    } else {
+      event.reply("note-updated", payload);
     }
   });
 });
 
+ipcMain.on('delete-note', (event, fileName) => {
+  const filePath = path.join(notesDir, fileName);
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error('Error deleting note:', err);
+    }
+  });
+});
+
+// GPT-4 is cool and nice!
